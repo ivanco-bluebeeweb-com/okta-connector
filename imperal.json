@@ -1,0 +1,5216 @@
+{
+  "manifest_schema_version": 3,
+  "sdk_version": "5.11.0",
+  "app_id": "okta-connector",
+  "version": "0.1.0",
+  "name": "Okta",
+  "description": "Connect your own Okta org (API Token or OAuth2 Service App) to manage Users, Groups, Applications, MFA Factors, Policies, admin Roles and Sessions, plus stream the System Log for security/audit visibility.",
+  "icon": "icon.svg",
+  "actions_explicit": true,
+  "system": false,
+  "capabilities": [
+    "okta:read",
+    "okta:write"
+  ],
+  "tools": [
+    {
+      "name": "connect_okta",
+      "description": "Connect an Okta org via API Token or OAuth2 Service App, after verifying connectivity.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.provider.connected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "label": {
+            "default": "",
+            "description": "Friendly org label, e.g. 'Acme Production'.",
+            "title": "Label",
+            "type": "string"
+          },
+          "org_domain": {
+            "description": "Okta org domain, e.g. 'acme.okta.com'.",
+            "title": "Org Domain",
+            "type": "string"
+          },
+          "auth_mode": {
+            "default": "api_token",
+            "description": "Authentication mode: 'api_token' or 'oauth2_service_app'.",
+            "title": "Auth Mode",
+            "type": "string"
+          },
+          "api_token": {
+            "default": "",
+            "description": "SSWS API Token (required for api_token mode).",
+            "title": "Api Token",
+            "type": "string"
+          },
+          "client_id": {
+            "default": "",
+            "description": "OAuth2 Service App client ID (required for oauth2_service_app mode).",
+            "title": "Client Id",
+            "type": "string"
+          },
+          "private_key": {
+            "default": "",
+            "description": "OAuth2 Service App private key PEM (required for oauth2_service_app mode).",
+            "title": "Private Key",
+            "type": "string"
+          }
+        },
+        "required": [
+          "org_domain"
+        ],
+        "title": "ConnectOktaParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connection_id": {
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "org_domain": {
+            "title": "Org Domain",
+            "type": "string"
+          },
+          "auth_mode": {
+            "title": "Auth Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connection_id",
+          "label",
+          "org_domain",
+          "auth_mode"
+        ],
+        "title": "OktaConnection",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.connect_okta",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "disconnect_okta",
+      "description": "Disconnect an Okta org: deletes the saved token/credentials. Nothing in Okta itself is changed.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.provider.disconnected"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "description": "Saved Okta org connection ID to remove from Imperal.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "connection_id"
+        ],
+        "title": "DisconnectOktaParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.disconnect_okta",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_connections",
+      "description": "List the connected Okta orgs.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {},
+        "title": "NoParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaConnection": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "connection_id": {
+                "title": "Connection Id",
+                "type": "string"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "org_domain": {
+                "title": "Org Domain",
+                "type": "string"
+              },
+              "auth_mode": {
+                "title": "Auth Mode",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "connection_id",
+              "label",
+              "org_domain",
+              "auth_mode"
+            ],
+            "title": "OktaConnection",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "connections": {
+            "items": {
+              "$ref": "#/$defs/OktaConnection"
+            },
+            "title": "Connections",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "connections"
+        ],
+        "title": "ConnectionList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_connections",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_users",
+      "description": "List Okta users, optionally filtered by status or search text.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "status_filter": {
+            "default": "",
+            "description": "Optional status filter: ACTIVE, STAGED, SUSPENDED, DEPROVISIONED, etc.",
+            "title": "Status Filter",
+            "type": "string"
+          },
+          "q": {
+            "default": "",
+            "description": "Optional search string matching name/email prefix.",
+            "title": "Q",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max users to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListUsersParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaUser": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "user_id": {
+                "title": "User Id",
+                "type": "string"
+              },
+              "login": {
+                "title": "Login",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "first_name": {
+                "title": "First Name",
+                "type": "string"
+              },
+              "last_name": {
+                "title": "Last Name",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "user_id",
+              "login",
+              "email",
+              "first_name",
+              "last_name",
+              "created"
+            ],
+            "title": "OktaUser",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/$defs/OktaUser"
+            },
+            "title": "Users",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "users"
+        ],
+        "title": "UserList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_users",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "get_user",
+      "description": "Read one Okta user in full by id or login.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "user_id": {
+            "title": "User Id",
+            "type": "string"
+          },
+          "login": {
+            "title": "Login",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "created": {
+            "title": "Created",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "user_id",
+          "login",
+          "email",
+          "first_name",
+          "last_name",
+          "created"
+        ],
+        "title": "OktaUser",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.get_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "create_user",
+      "description": "Create a new Okta user with profile fields, optionally activating them immediately.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "first_name": {
+            "description": "User's first name.",
+            "title": "First Name",
+            "type": "string"
+          },
+          "last_name": {
+            "description": "User's last name.",
+            "title": "Last Name",
+            "type": "string"
+          },
+          "email": {
+            "description": "User's primary email (also used as login unless login is set).",
+            "title": "Email",
+            "type": "string"
+          },
+          "login": {
+            "default": "",
+            "description": "Login (defaults to email if omitted).",
+            "title": "Login",
+            "type": "string"
+          },
+          "activate": {
+            "default": true,
+            "description": "Activate the user immediately (sends activation email unless password set).",
+            "title": "Activate",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "first_name",
+          "last_name",
+          "email"
+        ],
+        "title": "CreateUserParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "user_id": {
+            "title": "User Id",
+            "type": "string"
+          },
+          "login": {
+            "title": "Login",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "created": {
+            "title": "Created",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "user_id",
+          "login",
+          "email",
+          "first_name",
+          "last_name",
+          "created"
+        ],
+        "title": "OktaUser",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.create_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "update_user",
+      "description": "Update selected profile fields of an existing Okta user.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.updated"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          },
+          "first_name": {
+            "default": "",
+            "description": "New first name (optional).",
+            "title": "First Name",
+            "type": "string"
+          },
+          "last_name": {
+            "default": "",
+            "description": "New last name (optional).",
+            "title": "Last Name",
+            "type": "string"
+          },
+          "email": {
+            "default": "",
+            "description": "New email (optional).",
+            "title": "Email",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UpdateUserParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "user_id": {
+            "title": "User Id",
+            "type": "string"
+          },
+          "login": {
+            "title": "Login",
+            "type": "string"
+          },
+          "email": {
+            "title": "Email",
+            "type": "string"
+          },
+          "first_name": {
+            "title": "First Name",
+            "type": "string"
+          },
+          "last_name": {
+            "title": "Last Name",
+            "type": "string"
+          },
+          "created": {
+            "title": "Created",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "user_id",
+          "login",
+          "email",
+          "first_name",
+          "last_name",
+          "created"
+        ],
+        "title": "OktaUser",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.update_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "activate_user",
+      "description": "Activate a STAGED Okta user (sends activation email unless password already set).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.activate_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "suspend_user",
+      "description": "Suspend an active Okta user, blocking their sign-in.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.suspend_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "unsuspend_user",
+      "description": "Unsuspend a suspended Okta user, restoring their sign-in access.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.unsuspend_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "deactivate_user",
+      "description": "Deactivate (soft-delete) an Okta user. Okta keeps a 30-day recovery window internally.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.deactivate_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "unlock_user",
+      "description": "Unlock a locked-out Okta user.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.unlocked"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.unlock_user",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "expire_user_password",
+      "description": "Expire an Okta user's password, forcing them to set a new one at next login.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.password_expired"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.expire_user_password",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_groups",
+      "description": "List Okta groups, optionally filtered by search text.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "q": {
+            "default": "",
+            "description": "Optional search string matching group name prefix.",
+            "title": "Q",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max groups to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListGroupsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaGroup": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "title": "Description",
+                "type": "string"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "group_id": {
+                "title": "Group Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "group_type": {
+                "title": "Group Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "description",
+              "group_id",
+              "name",
+              "group_type"
+            ],
+            "title": "OktaGroup",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "groups": {
+            "items": {
+              "$ref": "#/$defs/OktaGroup"
+            },
+            "title": "Groups",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "groups"
+        ],
+        "title": "GroupList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_groups",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "get_group",
+      "description": "Read one Okta group in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Okta group id.",
+            "title": "Group Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id"
+        ],
+        "title": "GroupIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "group_id": {
+            "title": "Group Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "group_type": {
+            "title": "Group Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "group_id",
+          "name",
+          "group_type"
+        ],
+        "title": "OktaGroup",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.get_group",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "create_group",
+      "description": "Create a new Okta group.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.group.created"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "name": {
+            "description": "Group name.",
+            "title": "Name",
+            "type": "string"
+          },
+          "description": {
+            "default": "",
+            "description": "Group description.",
+            "title": "Description",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "CreateGroupParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "title": "Description",
+            "type": "string"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "group_id": {
+            "title": "Group Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "group_type": {
+            "title": "Group Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "description",
+          "group_id",
+          "name",
+          "group_type"
+        ],
+        "title": "OktaGroup",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.create_group",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_group_members",
+      "description": "List the members of an Okta group.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Okta group id.",
+            "title": "Group Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id"
+        ],
+        "title": "GroupIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaUser": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "user_id": {
+                "title": "User Id",
+                "type": "string"
+              },
+              "login": {
+                "title": "Login",
+                "type": "string"
+              },
+              "email": {
+                "title": "Email",
+                "type": "string"
+              },
+              "first_name": {
+                "title": "First Name",
+                "type": "string"
+              },
+              "last_name": {
+                "title": "Last Name",
+                "type": "string"
+              },
+              "created": {
+                "title": "Created",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "user_id",
+              "login",
+              "email",
+              "first_name",
+              "last_name",
+              "created"
+            ],
+            "title": "OktaUser",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "users": {
+            "items": {
+              "$ref": "#/$defs/OktaUser"
+            },
+            "title": "Users",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "users"
+        ],
+        "title": "UserList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_group_members",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "add_user_to_group",
+      "description": "Add a user to an Okta group.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.group.member_added"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Okta group id.",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id",
+          "user_id"
+        ],
+        "title": "GroupMemberParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.add_user_to_group",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "remove_user_from_group",
+      "description": "Remove a user from an Okta group.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.group.member_removed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Okta group id.",
+            "title": "Group Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "group_id",
+          "user_id"
+        ],
+        "title": "GroupMemberParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.remove_user_from_group",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_apps",
+      "description": "List Okta applications, optionally filtered by search text.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "q": {
+            "default": "",
+            "description": "Optional search string matching app label prefix.",
+            "title": "Q",
+            "type": "string"
+          },
+          "limit": {
+            "default": 50,
+            "description": "Max apps to return (1-200).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListAppsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaApp": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "app_id": {
+                "title": "App Id",
+                "type": "string"
+              },
+              "label": {
+                "title": "Label",
+                "type": "string"
+              },
+              "sign_on_mode": {
+                "title": "Sign On Mode",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "app_id",
+              "label",
+              "sign_on_mode"
+            ],
+            "title": "OktaApp",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "apps": {
+            "items": {
+              "$ref": "#/$defs/OktaApp"
+            },
+            "title": "Apps",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "apps"
+        ],
+        "title": "AppList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_apps",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "get_app",
+      "description": "Read one Okta application in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "app_id": {
+            "description": "Okta application id.",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "AppIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "app_id": {
+            "title": "App Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "sign_on_mode": {
+            "title": "Sign On Mode",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "app_id",
+          "label",
+          "sign_on_mode"
+        ],
+        "title": "OktaApp",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.get_app",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "assign_user_to_app",
+      "description": "Assign an Okta user directly to an application.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.app.user_assigned"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "app_id": {
+            "description": "Okta application id.",
+            "title": "App Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "user_id"
+        ],
+        "title": "AssignUserToAppParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.assign_user_to_app",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "assign_group_to_app",
+      "description": "Assign an Okta group to an application (all group members get access).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.app.group_assigned"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "app_id": {
+            "description": "Okta application id.",
+            "title": "App Id",
+            "type": "string"
+          },
+          "group_id": {
+            "description": "Okta group id.",
+            "title": "Group Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id",
+          "group_id"
+        ],
+        "title": "AssignGroupToAppParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.assign_group_to_app",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "activate_app",
+      "description": "Activate an Okta application.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.app.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "app_id": {
+            "description": "Okta application id.",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "AppIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.activate_app",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "deactivate_app",
+      "description": "Deactivate an Okta application.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.app.status_changed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "app_id": {
+            "description": "Okta application id.",
+            "title": "App Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "app_id"
+        ],
+        "title": "AppIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.deactivate_app",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_user_factors",
+      "description": "List MFA factors enrolled for an Okta user.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "ListFactorsParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaFactor": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "factor_id": {
+                "title": "Factor Id",
+                "type": "string"
+              },
+              "factor_type": {
+                "title": "Factor Type",
+                "type": "string"
+              },
+              "provider": {
+                "title": "Provider",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "factor_id",
+              "factor_type",
+              "provider"
+            ],
+            "title": "OktaFactor",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "factors": {
+            "items": {
+              "$ref": "#/$defs/OktaFactor"
+            },
+            "title": "Factors",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "factors"
+        ],
+        "title": "FactorList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_user_factors",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "reset_user_factors",
+      "description": "Reset ALL enrolled MFA factors for an Okta user -- they must re-enroll at next login. Use when a user has lost their MFA device.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.user.factor_reset"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "UserIdParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.reset_user_factors",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_policies",
+      "description": "List Okta policies of a given type (sign-on, password, MFA enrollment, access).",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_type": {
+            "default": "OKTA_SIGN_ON",
+            "description": "Policy type: OKTA_SIGN_ON, PASSWORD, MFA_ENROLL, ACCESS_POLICY.",
+            "title": "Policy Type",
+            "type": "string"
+          }
+        },
+        "title": "ListPoliciesParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "OktaPolicy": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "policy_id": {
+                "title": "Policy Id",
+                "type": "string"
+              },
+              "name": {
+                "title": "Name",
+                "type": "string"
+              },
+              "policy_type": {
+                "title": "Policy Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "policy_id",
+              "name",
+              "policy_type"
+            ],
+            "title": "OktaPolicy",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "policies": {
+            "items": {
+              "$ref": "#/$defs/OktaPolicy"
+            },
+            "title": "Policies",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "policies"
+        ],
+        "title": "PolicyList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_policies",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "get_policy",
+      "description": "Read one Okta policy in full.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {},
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "policy_id": {
+            "title": "Policy Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "policy_type": {
+            "title": "Policy Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "policy_id",
+          "name",
+          "policy_type"
+        ],
+        "title": "OktaPolicy",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.get_policy",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_admin_roles",
+      "description": "List admin roles assigned to an Okta user.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {},
+      "return_schema": {
+        "$defs": {
+          "AdminRole": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "title": "Status",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "role_id": {
+                "title": "Role Id",
+                "type": "string"
+              },
+              "role_type": {
+                "title": "Role Type",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "status",
+              "role_id",
+              "role_type"
+            ],
+            "title": "AdminRole",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "roles": {
+            "items": {
+              "$ref": "#/$defs/AdminRole"
+            },
+            "title": "Roles",
+            "type": "array"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "roles"
+        ],
+        "title": "RoleList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_admin_roles",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "assign_admin_role",
+      "description": "Assign an admin role to an Okta user (e.g. SUPER_ADMIN, ORG_ADMIN, APP_ADMIN).",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.role.assigned"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          },
+          "role_type": {
+            "description": "Okta admin role type, e.g. 'SUPER_ADMIN', 'ORG_ADMIN', 'APP_ADMIN'.",
+            "title": "Role Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "role_type"
+        ],
+        "title": "AssignRoleParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "role_id": {
+            "title": "Role Id",
+            "type": "string"
+          },
+          "role_type": {
+            "title": "Role Type",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status",
+          "role_id",
+          "role_type"
+        ],
+        "title": "AdminRole",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.assign_admin_role",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "remove_admin_role",
+      "description": "Remove an admin role assignment from an Okta user.",
+      "action_type": "write",
+      "chain_callable": true,
+      "effects": [
+        "okta.role.removed"
+      ],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id.",
+            "title": "User Id",
+            "type": "string"
+          },
+          "role_id": {
+            "description": "Okta role assignment id.",
+            "title": "Role Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "role_id"
+        ],
+        "title": "RemoveRoleParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "ok": {
+            "title": "Ok",
+            "type": "boolean"
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "ok",
+          "detail"
+        ],
+        "title": "DeleteResult",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.remove_admin_role",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "list_system_log",
+      "description": "List Okta System Log events (audit trail of logins, MFA, admin actions), optionally filtered by time range or SCIM-style filter expression.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "since": {
+            "default": "",
+            "description": "ISO 8601 start time, e.g. '2026-08-01T00:00:00Z'.",
+            "title": "Since",
+            "type": "string"
+          },
+          "until": {
+            "default": "",
+            "description": "ISO 8601 end time.",
+            "title": "Until",
+            "type": "string"
+          },
+          "filter_expr": {
+            "default": "",
+            "description": "Okta System Log SCIM-style filter expression, e.g. \"eventType eq \\\"user.session.start\\\"\".",
+            "title": "Filter Expr",
+            "type": "string"
+          },
+          "q": {
+            "default": "",
+            "description": "Free-text search across log events.",
+            "title": "Q",
+            "type": "string"
+          },
+          "limit": {
+            "default": 100,
+            "description": "Max events to return (1-1000).",
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "title": "ListSystemLogParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "$defs": {
+          "SystemLogEvent": {
+            "properties": {
+              "id": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ],
+                "title": "Id"
+              },
+              "title": {
+                "title": "Title",
+                "type": "string"
+              },
+              "kind": {
+                "default": "",
+                "title": "Kind",
+                "type": "string"
+              },
+              "subtitle": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Subtitle"
+              },
+              "description": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Description"
+              },
+              "status": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Status"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "uuid": {
+                "title": "Uuid",
+                "type": "string"
+              },
+              "published": {
+                "title": "Published",
+                "type": "string"
+              },
+              "event_type": {
+                "title": "Event Type",
+                "type": "string"
+              },
+              "actor": {
+                "title": "Actor",
+                "type": "string"
+              },
+              "outcome_result": {
+                "title": "Outcome Result",
+                "type": "string"
+              },
+              "outcome_reason": {
+                "title": "Outcome Reason",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "uuid",
+              "published",
+              "event_type",
+              "actor",
+              "outcome_result",
+              "outcome_reason"
+            ],
+            "title": "SystemLogEvent",
+            "type": "object",
+            "x-sdl": "entity"
+          }
+        },
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/$defs/SystemLogEvent"
+            },
+            "title": "Events",
+            "type": "array"
+          },
+          "next_cursor": {
+            "title": "Next Cursor",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "events",
+          "next_cursor"
+        ],
+        "title": "SystemLogList",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.list_system_log",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    },
+    {
+      "name": "audit_org",
+      "description": "Build one aggregated health report for the connected Okta org: active/suspended user counts, admin count, and recent failed logins.",
+      "action_type": "read",
+      "chain_callable": true,
+      "effects": [],
+      "id_projection": "",
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          }
+        },
+        "title": "ConnectionRefParams",
+        "type": "object"
+      },
+      "return_schema": {
+        "properties": {
+          "id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "integer"
+              }
+            ],
+            "title": "Id"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "kind": {
+            "default": "",
+            "title": "Kind",
+            "type": "string"
+          },
+          "subtitle": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Subtitle"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Description"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Status"
+          },
+          "url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "title": "Url"
+          },
+          "org_domain": {
+            "title": "Org Domain",
+            "type": "string"
+          },
+          "active_users": {
+            "title": "Active Users",
+            "type": "integer"
+          },
+          "suspended_users": {
+            "title": "Suspended Users",
+            "type": "integer"
+          },
+          "admin_count": {
+            "title": "Admin Count",
+            "type": "integer"
+          },
+          "failed_logins_24h": {
+            "title": "Failed Logins 24H",
+            "type": "integer"
+          },
+          "notes": {
+            "title": "Notes",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "org_domain",
+          "active_users",
+          "suspended_users",
+          "admin_count",
+          "failed_logins_24h",
+          "notes"
+        ],
+        "title": "HealthAudit",
+        "type": "object",
+        "x-sdl": "entity"
+      },
+      "event": "okta-connector.audit_org",
+      "background": false,
+      "long_running": false,
+      "scopes": [],
+      "owner_chat_tool": "okta"
+    }
+  ],
+  "signals": [],
+  "schedules": [],
+  "required_scopes": [],
+  "icon_size_bytes": 527,
+  "lifecycle": {
+    "health_check": {
+      "interval_sec": 60
+    }
+  },
+  "secrets": [
+    {
+      "name": "okta_connections",
+      "description": "JSON list of connected Okta orgs and encrypted credentials. Managed only through connect_okta and disconnect_okta.",
+      "required": true,
+      "write_mode": "both",
+      "max_bytes": 65536,
+      "scope": "user",
+      "rotation_hint_days": 90
+    }
+  ],
+  "panels": [
+    {
+      "panel_id": "secrets",
+      "slot": "right",
+      "title": "Secrets",
+      "tree": {},
+      "icon": "KeyRound",
+      "refresh": "manual",
+      "center_overlay": false
+    }
+  ]
+}

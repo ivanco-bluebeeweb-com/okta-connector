@@ -17,7 +17,7 @@ async def okta_users(ctx, **kwargs) -> ui.UINode:
     try:
         data, _ = await client.request("GET", "/api/v1/users", params={"limit": 50})
     except Exception as exc:  # noqa: BLE001
-        return ui.Alert(variant="error", message=f"Could not load users: {exc}")
+        return ui.Alert(type="error", message=f"Could not load users: {exc}")
     rows = []
     for u in (data or []):
         profile = u.get("profile", {}) or {}
@@ -49,7 +49,7 @@ async def okta_groups(ctx, **kwargs) -> ui.UINode:
     try:
         data, _ = await client.request("GET", "/api/v1/groups", params={"limit": 50})
     except Exception as exc:  # noqa: BLE001
-        return ui.Alert(variant="error", message=f"Could not load groups: {exc}")
+        return ui.Alert(type="error", message=f"Could not load groups: {exc}")
     rows = []
     for g in (data or []):
         profile = g.get("profile", {}) or {}
@@ -77,7 +77,7 @@ async def okta_apps(ctx, **kwargs) -> ui.UINode:
     try:
         data, _ = await client.request("GET", "/api/v1/apps", params={"limit": 50})
     except Exception as exc:  # noqa: BLE001
-        return ui.Alert(variant="error", message=f"Could not load applications: {exc}")
+        return ui.Alert(type="error", message=f"Could not load applications: {exc}")
     rows = [{"label": a.get("label", ""), "status": a.get("status", ""), "sign_on_mode": a.get("signOnMode", "")} for a in (data or [])]
     return ui.Stack(direction="v", gap=3, align="stretch", children=[
         ui.Header(text="Applications", level=2),
@@ -130,7 +130,7 @@ async def okta_system_log(ctx, **kwargs) -> ui.UINode:
     try:
         data, _ = await client.request("GET", "/api/v1/logs", params={"limit": 50})
     except Exception as exc:  # noqa: BLE001
-        return ui.Alert(variant="error", message=f"Could not load system log: {exc}")
+        return ui.Alert(type="error", message=f"Could not load system log: {exc}")
     rows = []
     for e in (data or []):
         actor = e.get("actor", {}) or {}
