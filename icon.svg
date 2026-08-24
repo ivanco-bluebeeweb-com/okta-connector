@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Okta Connector">
+  <defs>
+    <linearGradient id="bg" x1="14" y1="12" x2="114" y2="118" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#007DC1"/>
+      <stop offset="1" stop-color="#00297A"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="112" height="112" rx="24" fill="url(#bg)"/>
+  <circle cx="64" cy="64" r="30" fill="none" stroke="#FFFFFF" stroke-width="10"/>
+  <circle cx="64" cy="64" r="9" fill="#FFFFFF"/>
+</svg>
