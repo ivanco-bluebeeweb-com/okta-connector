@@ -13,11 +13,11 @@ from schemas import (
     AssignUserToAppParams, ConnectOktaParams, ConnectionList, ConnectionRefParams,
     CreateGroupParams, CreateUserParams, DeleteResult, DisconnectOktaParams,
     FactorList, GroupIdParams, GroupList, GroupMemberParams, HealthAudit,
-    ListAppsParams, ListFactorsParams, ListGroupsParams, ListPoliciesParams,
-    ListSystemLogParams, ListUsersParams, NoParams, OktaApp, OktaConnection,
-    OktaFactor, OktaGroup, OktaPolicy, OktaUser, PolicyList, RemoveRoleParams,
-    RoleList, SystemLogEvent, SystemLogList, UpdateUserParams, UserIdParams,
-    UserList,
+    ListAdminRolesParams, ListAppsParams, ListFactorsParams, ListGroupsParams,
+    ListPoliciesParams, ListSystemLogParams, ListUsersParams, NoParams,
+    OktaApp, OktaConnection, OktaFactor, OktaGroup, OktaPolicy, OktaUser,
+    PolicyIdParams, PolicyList, RemoveRoleParams, RoleList, SystemLogEvent,
+    SystemLogList, UpdateUserParams, UserIdParams, UserList,
 )
 
 _SECRET_NAME = "okta_connections"

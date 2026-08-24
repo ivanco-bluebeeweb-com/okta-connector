@@ -4257,7 +4257,26 @@
       "chain_callable": true,
       "effects": [],
       "id_projection": "",
-      "params_schema": {},
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "policy_id": {
+            "description": "Okta policy id.",
+            "title": "Policy Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "policy_id"
+        ],
+        "title": "PolicyIdParams",
+        "type": "object"
+      },
       "return_schema": {
         "properties": {
           "id": {
@@ -4358,7 +4377,26 @@
       "chain_callable": true,
       "effects": [],
       "id_projection": "",
-      "params_schema": {},
+      "params_schema": {
+        "properties": {
+          "connection_id": {
+            "default": "",
+            "description": "Optional saved Okta org connection ID. Omit to use the first connected org.",
+            "title": "Connection Id",
+            "type": "string"
+          },
+          "user_id": {
+            "description": "Okta user id or login.",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "ListAdminRolesParams",
+        "type": "object"
+      },
       "return_schema": {
         "$defs": {
           "AdminRole": {
