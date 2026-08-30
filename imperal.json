@@ -1,6 +1,6 @@
 {
   "manifest_schema_version": 3,
-  "sdk_version": "5.11.0",
+  "sdk_version": "5.13.0",
   "app_id": "okta-connector",
   "version": "0.1.0",
   "name": "Okta",
@@ -5249,6 +5249,87 @@
       "icon": "KeyRound",
       "refresh": "manual",
       "center_overlay": false
+    },
+    {
+      "panel_id": "okta_sidebar",
+      "slot": "left",
+      "title": "Okta",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "okta_connect_help",
+      "slot": "center",
+      "title": "Connect Okta",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_center",
+      "slot": "center",
+      "title": "Okta",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": false
+    },
+    {
+      "panel_id": "okta_users",
+      "slot": "center",
+      "title": "Users",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_groups",
+      "slot": "center",
+      "title": "Groups",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_apps",
+      "slot": "center",
+      "title": "Applications",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_policies",
+      "slot": "center",
+      "title": "Policies",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_system_log",
+      "slot": "center",
+      "title": "System Log",
+      "tree": {},
+      "icon": "",
+      "refresh": "manual",
+      "center_overlay": true
+    },
+    {
+      "panel_id": "okta_settings",
+      "slot": "center",
+      "title": "Okta settings",
+      "tree": {},
+      "icon": "Settings",
+      "refresh": "manual",
+      "center_overlay": true
     }
   ]
 }
