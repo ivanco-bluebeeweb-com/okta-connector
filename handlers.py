@@ -99,7 +99,7 @@ async def connect_okta(ctx, params: ConnectOktaParams) -> ActionResult:
     }
     connections.append(entry)
     await _save_connections(ctx, connections)
-    return ActionResult.success(data=_connection_entity(entry))
+    return ActionResult.success(data=_connection_entity(entry), summary="Okta connected.")
 
 
 @chat.function("disconnect_okta", "Disconnect an Okta org: deletes the saved token/credentials. Nothing in Okta itself is changed.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.disconnect_okta", effects=["okta.provider.disconnected"])
@@ -110,14 +110,14 @@ async def disconnect_okta(ctx, params: DisconnectOktaParams) -> ActionResult:
     if len(remaining) == len(connections):
         return ActionResult.error(f"No saved Okta connection with id '{params.connection_id}'.")
     await _save_connections(ctx, remaining)
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Okta org disconnected."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Okta org disconnected."), summary="Okta disconnected.")
 
 
 @chat.function("list_connections", "List the connected Okta orgs.", action_type="read", chain_callable=True, data_model=ConnectionList, event="okta-connector.list_connections")
 async def list_connections(ctx, params: NoParams) -> ActionResult:
     """List the connected Okta orgs."""
     connections = await _load_connections(ctx)
-    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]))
+    return ActionResult.success(data=ConnectionList(connections=[_connection_entity(c) for c in connections]), summary="Connections listed.")
 
 
 def _user_entity(u: dict) -> OktaUser:
@@ -150,7 +150,7 @@ async def list_users(ctx, params: ListUsersParams) -> ActionResult:
         data, _ = await client.request("GET", "/api/v1/users", params=q)
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=UserList(users=[_user_entity(u) for u in (data or [])]))
+    return ActionResult.success(data=UserList(users=[_user_entity(u) for u in (data or [])]), summary="Users listed.")
 
 
 @chat.function("get_user", "Read one Okta user in full by id or login.", action_type="read", chain_callable=True, data_model=OktaUser, event="okta-connector.get_user")
@@ -162,7 +162,7 @@ async def get_user(ctx, params: UserIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/users/{params.user_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_user_entity(data or {}))
+    return ActionResult.success(data=_user_entity(data or {}), summary="User retrieved.")
 
 
 @chat.function("create_user", "Create a new Okta user with profile fields, optionally activating them immediately.", action_type="write", chain_callable=True, data_model=OktaUser, event="okta-connector.create_user", effects=["okta.user.created"])
@@ -183,7 +183,7 @@ async def create_user(ctx, params: CreateUserParams) -> ActionResult:
         data, _ = await client.request("POST", "/api/v1/users", params={"activate": str(params.activate).lower()}, json_body=body)
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_user_entity(data or {}))
+    return ActionResult.success(data=_user_entity(data or {}), summary="User created.")
 
 
 @chat.function("update_user", "Update selected profile fields of an existing Okta user.", action_type="write", chain_callable=True, data_model=OktaUser, event="okta-connector.update_user", effects=["okta.user.updated"])
@@ -202,7 +202,7 @@ async def update_user(ctx, params: UpdateUserParams) -> ActionResult:
         data, _ = await client.request("POST", f"/api/v1/users/{params.user_id}", json_body={"profile": profile})
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_user_entity(data or {}))
+    return ActionResult.success(data=_user_entity(data or {}), summary="User updated.")
 
 
 @chat.function("activate_user", "Activate a STAGED Okta user (sends activation email unless password already set).", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.activate_user", effects=["okta.user.status_changed"])
@@ -214,7 +214,7 @@ async def activate_user(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/activate", params={"sendEmail": "true"})
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User activated."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User activated."), summary="Activate user done.")
 
 
 @chat.function("suspend_user", "Suspend an active Okta user, blocking their sign-in.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.suspend_user", effects=["okta.user.status_changed"])
@@ -226,7 +226,7 @@ async def suspend_user(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/suspend")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User suspended."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User suspended."), summary="Suspend user done.")
 
 
 @chat.function("unsuspend_user", "Unsuspend a suspended Okta user, restoring their sign-in access.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.unsuspend_user", effects=["okta.user.status_changed"])
@@ -238,7 +238,7 @@ async def unsuspend_user(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/unsuspend")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User unsuspended."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User unsuspended."), summary="Unsuspend user done.")
 
 
 @chat.function("deactivate_user", "Deactivate (soft-delete) an Okta user. Okta keeps a 30-day recovery window internally.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.deactivate_user", effects=["okta.user.status_changed"])
@@ -250,7 +250,7 @@ async def deactivate_user(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/deactivate")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User deactivated."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User deactivated."), summary="Deactivate user done.")
 
 
 @chat.function("unlock_user", "Unlock a locked-out Okta user.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.unlock_user", effects=["okta.user.unlocked"])
@@ -262,7 +262,7 @@ async def unlock_user(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/unlock")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User unlocked."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User unlocked."), summary="Unlock user done.")
 
 
 @chat.function("expire_user_password", "Expire an Okta user's password, forcing them to set a new one at next login.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.expire_user_password", effects=["okta.user.password_expired"])
@@ -274,7 +274,7 @@ async def expire_user_password(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/expire_password")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Password expired; user must set a new one at next login."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Password expired; user must set a new one at next login."), summary="Expire user password done.")
 
 
 def _group_entity(g: dict) -> OktaGroup:
@@ -299,7 +299,7 @@ async def list_groups(ctx, params: ListGroupsParams) -> ActionResult:
         data, _ = await client.request("GET", "/api/v1/groups", params=q)
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=GroupList(groups=[_group_entity(g) for g in (data or [])]))
+    return ActionResult.success(data=GroupList(groups=[_group_entity(g) for g in (data or [])]), summary="Groups listed.")
 
 
 @chat.function("get_group", "Read one Okta group in full.", action_type="read", chain_callable=True, data_model=OktaGroup, event="okta-connector.get_group")
@@ -311,7 +311,7 @@ async def get_group(ctx, params: GroupIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/groups/{params.group_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_group_entity(data or {}))
+    return ActionResult.success(data=_group_entity(data or {}), summary="Group retrieved.")
 
 
 @chat.function("create_group", "Create a new Okta group.", action_type="write", chain_callable=True, data_model=OktaGroup, event="okta-connector.create_group", effects=["okta.group.created"])
@@ -324,7 +324,7 @@ async def create_group(ctx, params: CreateGroupParams) -> ActionResult:
         data, _ = await client.request("POST", "/api/v1/groups", json_body=body)
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_group_entity(data or {}))
+    return ActionResult.success(data=_group_entity(data or {}), summary="Group created.")
 
 
 @chat.function("list_group_members", "List the members of an Okta group.", action_type="read", chain_callable=True, data_model=UserList, event="okta-connector.list_group_members")
@@ -336,7 +336,7 @@ async def list_group_members(ctx, params: GroupIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/groups/{params.group_id}/users")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=UserList(users=[_user_entity(u) for u in (data or [])]))
+    return ActionResult.success(data=UserList(users=[_user_entity(u) for u in (data or [])]), summary="Group members listed.")
 
 
 @chat.function("add_user_to_group", "Add a user to an Okta group.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.add_user_to_group", effects=["okta.group.member_added"])
@@ -348,7 +348,7 @@ async def add_user_to_group(ctx, params: GroupMemberParams) -> ActionResult:
         await client.request("PUT", f"/api/v1/groups/{params.group_id}/users/{params.user_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User added to group."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User added to group."), summary="User to group created.")
 
 
 @chat.function("remove_user_from_group", "Remove a user from an Okta group.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.remove_user_from_group", effects=["okta.group.member_removed"])
@@ -360,7 +360,7 @@ async def remove_user_from_group(ctx, params: GroupMemberParams) -> ActionResult
         await client.request("DELETE", f"/api/v1/groups/{params.group_id}/users/{params.user_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User removed from group."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User removed from group."), summary="User from group deleted.")
 
 
 def _app_entity(a: dict) -> OktaApp:
@@ -384,7 +384,7 @@ async def list_apps(ctx, params: ListAppsParams) -> ActionResult:
         data, _ = await client.request("GET", "/api/v1/apps", params=q)
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=AppList(apps=[_app_entity(a) for a in (data or [])]))
+    return ActionResult.success(data=AppList(apps=[_app_entity(a) for a in (data or [])]), summary="Apps listed.")
 
 
 @chat.function("get_app", "Read one Okta application in full.", action_type="read", chain_callable=True, data_model=OktaApp, event="okta-connector.get_app")
@@ -396,7 +396,7 @@ async def get_app(ctx, params: AppIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/apps/{params.app_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_app_entity(data or {}))
+    return ActionResult.success(data=_app_entity(data or {}), summary="App retrieved.")
 
 
 @chat.function("assign_user_to_app", "Assign an Okta user directly to an application.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.assign_user_to_app", effects=["okta.app.user_assigned"])
@@ -411,7 +411,7 @@ async def assign_user_to_app(ctx, params: AssignUserToAppParams) -> ActionResult
         )
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="User assigned to application."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="User assigned to application."), summary="Assign user to app done.")
 
 
 @chat.function("assign_group_to_app", "Assign an Okta group to an application (all group members get access).", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.assign_group_to_app", effects=["okta.app.group_assigned"])
@@ -423,7 +423,7 @@ async def assign_group_to_app(ctx, params: AssignGroupToAppParams) -> ActionResu
         await client.request("PUT", f"/api/v1/apps/{params.app_id}/groups/{params.group_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Group assigned to application."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Group assigned to application."), summary="Assign group to app done.")
 
 
 @chat.function("activate_app", "Activate an Okta application.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.activate_app", effects=["okta.app.status_changed"])
@@ -435,7 +435,7 @@ async def activate_app(ctx, params: AppIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/apps/{params.app_id}/lifecycle/activate")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Application activated."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Application activated."), summary="Activate app done.")
 
 
 @chat.function("deactivate_app", "Deactivate an Okta application.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.deactivate_app", effects=["okta.app.status_changed"])
@@ -447,7 +447,7 @@ async def deactivate_app(ctx, params: AppIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/apps/{params.app_id}/lifecycle/deactivate")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Application deactivated."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Application deactivated."), summary="Deactivate app done.")
 
 
 def _factor_entity(f: dict) -> OktaFactor:
@@ -468,7 +468,7 @@ async def list_user_factors(ctx, params: ListFactorsParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/users/{params.user_id}/factors")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=FactorList(factors=[_factor_entity(f) for f in (data or [])]))
+    return ActionResult.success(data=FactorList(factors=[_factor_entity(f) for f in (data or [])]), summary="User factors listed.")
 
 
 @chat.function("reset_user_factors", "Reset ALL enrolled MFA factors for an Okta user -- they must re-enroll at next login. Use when a user has lost their MFA device.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.reset_user_factors", effects=["okta.user.factor_reset"])
@@ -480,7 +480,7 @@ async def reset_user_factors(ctx, params: UserIdParams) -> ActionResult:
         await client.request("POST", f"/api/v1/users/{params.user_id}/lifecycle/reset_factors")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="All MFA factors reset; user must re-enroll at next login."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="All MFA factors reset; user must re-enroll at next login."), summary="Reset user factors done.")
 
 
 def _policy_entity(p: dict) -> OktaPolicy:
@@ -501,7 +501,7 @@ async def list_policies(ctx, params: ListPoliciesParams) -> ActionResult:
         data, _ = await client.request("GET", "/api/v1/policies", params={"type": params.policy_type})
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=PolicyList(policies=[_policy_entity(p) for p in (data or [])]))
+    return ActionResult.success(data=PolicyList(policies=[_policy_entity(p) for p in (data or [])]), summary="Policies listed.")
 
 
 @chat.function("get_policy", "Read one Okta policy in full.", action_type="read", chain_callable=True, data_model=OktaPolicy, event="okta-connector.get_policy")
@@ -513,7 +513,7 @@ async def get_policy(ctx, params: PolicyIdParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/policies/{params.policy_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_policy_entity(data or {}))
+    return ActionResult.success(data=_policy_entity(data or {}), summary="Policy retrieved.")
 
 
 def _role_entity(r: dict) -> AdminRole:
@@ -533,7 +533,7 @@ async def list_admin_roles(ctx, params: ListAdminRolesParams) -> ActionResult:
         data, _ = await client.request("GET", f"/api/v1/users/{params.user_id}/roles")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=RoleList(roles=[_role_entity(r) for r in (data or [])]))
+    return ActionResult.success(data=RoleList(roles=[_role_entity(r) for r in (data or [])]), summary="Admin roles listed.")
 
 
 @chat.function("assign_admin_role", "Assign an admin role to an Okta user (e.g. SUPER_ADMIN, ORG_ADMIN, APP_ADMIN).", action_type="write", chain_callable=True, data_model=AdminRole, event="okta-connector.assign_admin_role", effects=["okta.role.assigned"])
@@ -548,7 +548,7 @@ async def assign_admin_role(ctx, params: AssignRoleParams) -> ActionResult:
         )
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=_role_entity(data or {}))
+    return ActionResult.success(data=_role_entity(data or {}), summary="Assign admin role done.")
 
 
 @chat.function("remove_admin_role", "Remove an admin role assignment from an Okta user.", action_type="write", chain_callable=True, data_model=DeleteResult, event="okta-connector.remove_admin_role", effects=["okta.role.removed"])
@@ -560,7 +560,7 @@ async def remove_admin_role(ctx, params: RemoveRoleParams) -> ActionResult:
         await client.request("DELETE", f"/api/v1/users/{params.user_id}/roles/{params.role_id}")
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
-    return ActionResult.success(data=DeleteResult(ok=True, detail="Admin role removed."))
+    return ActionResult.success(data=DeleteResult(ok=True, detail="Admin role removed."), summary="Admin role deleted.")
 
 
 def _log_entity(e: dict) -> SystemLogEvent:
@@ -595,7 +595,7 @@ async def list_system_log(ctx, params: ListSystemLogParams) -> ActionResult:
     except oc.OktaError as exc:
         return ActionResult.error(str(exc))
     next_cursor = oc.parse_next_link(headers)
-    return ActionResult.success(data=SystemLogList(events=[_log_entity(e) for e in (data or [])], next_cursor=next_cursor))
+    return ActionResult.success(data=SystemLogList(events=[_log_entity(e) for e in (data or [])], next_cursor=next_cursor), summary="System log listed.")
 
 
 @chat.function("audit_org", "Build one aggregated health report for the connected Okta org: active/suspended user counts, admin count, and recent failed logins.", action_type="read", chain_callable=True, data_model=HealthAudit, event="okta-connector.audit_org")
@@ -623,4 +623,4 @@ async def audit_org(ctx, params: ConnectionRefParams) -> ActionResult:
             f"{len(failed or [])} failed logins in the sampled window. "
             "Admin count requires per-user role lookups (use list_admin_roles)."
         ),
-    ))
+    ), summary="Org audit ready.")
