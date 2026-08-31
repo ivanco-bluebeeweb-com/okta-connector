@@ -124,6 +124,8 @@ class RemoveRoleParams(ConnectionRefParams):
 # ---- SDL entities ----
 
 class OktaConnection(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connection_id: str
     label: str
     org_domain: str
@@ -131,10 +133,14 @@ class OktaConnection(sdl.Entity):
 
 
 class ConnectionList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     connections: list[OktaConnection]
 
 
 class OktaUser(sdl.Entity):
+    id: str = ""
+    title: str = ""
     user_id: str
     login: str
     email: str
@@ -145,10 +151,14 @@ class OktaUser(sdl.Entity):
 
 
 class UserList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     users: list[OktaUser]
 
 
 class OktaGroup(sdl.Entity):
+    id: str = ""
+    title: str = ""
     group_id: str
     name: str
     description: str
@@ -156,10 +166,14 @@ class OktaGroup(sdl.Entity):
 
 
 class GroupList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     groups: list[OktaGroup]
 
 
 class OktaApp(sdl.Entity):
+    id: str = ""
+    title: str = ""
     app_id: str
     label: str
     status: str
@@ -167,10 +181,14 @@ class OktaApp(sdl.Entity):
 
 
 class AppList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     apps: list[OktaApp]
 
 
 class OktaFactor(sdl.Entity):
+    id: str = ""
+    title: str = ""
     factor_id: str
     factor_type: str
     provider: str
@@ -178,10 +196,14 @@ class OktaFactor(sdl.Entity):
 
 
 class FactorList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     factors: list[OktaFactor]
 
 
 class OktaPolicy(sdl.Entity):
+    id: str = ""
+    title: str = ""
     policy_id: str
     name: str
     policy_type: str
@@ -189,10 +211,14 @@ class OktaPolicy(sdl.Entity):
 
 
 class PolicyList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     policies: list[OktaPolicy]
 
 
 class SystemLogEvent(sdl.Entity):
+    id: str = ""
+    title: str = ""
     uuid: str
     published: str
     event_type: str
@@ -202,21 +228,29 @@ class SystemLogEvent(sdl.Entity):
 
 
 class SystemLogList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     events: list[SystemLogEvent]
     next_cursor: str
 
 
 class AdminRole(sdl.Entity):
+    id: str = ""
+    title: str = ""
     role_id: str
     role_type: str
     status: str
 
 
 class RoleList(sdl.Entity):
+    id: str = ""
+    title: str = ""
     roles: list[AdminRole]
 
 
 class HealthAudit(sdl.Entity):
+    id: str = ""
+    title: str = ""
     org_domain: str
     active_users: int
     suspended_users: int
@@ -226,5 +260,7 @@ class HealthAudit(sdl.Entity):
 
 
 class DeleteResult(sdl.Entity):
+    id: str = ""
+    title: str = ""
     ok: bool
     detail: str
